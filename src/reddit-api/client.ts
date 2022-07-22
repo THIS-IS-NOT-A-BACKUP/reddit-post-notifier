@@ -41,15 +41,13 @@ export default class RedditApiClient {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
         if (this.accessToken) {
+            if (!init.headers) init.headers = {};
             init.headers['User-Agent'] = config.userAgent;
             init.headers['Authorization'] = `bearer ${this.accessToken}`;
         }
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
-        if (result.status !== 200) {
-            throw new Error(`${result.status} ${result.statusText}`);
-        }
         return result.json();
     }
 

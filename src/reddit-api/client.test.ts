@@ -2,6 +2,7 @@ import { config } from '../constants';
 import RedditApiClient from './client';
 import auth from './auth';
 import fetchMock from 'jest-fetch-mock';
+import type { RedditError } from './reddit-types';
 
 jest.mock('./auth.ts');
 afterEach(() => jest.clearAllMocks());
@@ -29,9 +30,10 @@ describe('HTTP GET request', () => {
 
     test('should return JSON response', async () => {
         fetchMock.mockImplementationOnce((url, init) => {
-            expect(init.method).toBe('GET');
-            expect(init.headers['User-Agent']).toBe(config.userAgent);
-            expect(init.headers['Authorization']).toBe(`bearer ${accessToken}`);
+            expect(init).not.toBeUndefined();
+            expect(init?.method).toBe('GET');
+            expect(init?.headers?.['User-Agent']).toBe(config.userAgent);
+            expect(init?.headers?.['Authorization']).toBe(`bearer ${accessToken}`);
             expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
             return jsonResponse(response);
         });
@@ -70,6 +72,20 @@ describe('HTTP GET request', () => {
         const reddit = new RedditApiClient();
         const result = await reddit.GET(endpoint, params);
         expect(result).toEqual(response);
+    });
+
+    test('should return error', async () => {
+        const rError: RedditError = {
+            error: 404,
+            message: 'Not Found',
+            reason: 'banned',
+        };
+        fetchMock.mockImplementation(() => {
+            return jsonResponse(rError, 404);
+        });
+        const reddit = new RedditApiClient();
+        const result = await reddit.GET('bannedSub', params);
+        expect(result).toEqual(rError);
     });
 });
 
