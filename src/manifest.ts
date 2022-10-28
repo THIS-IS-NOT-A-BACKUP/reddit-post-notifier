@@ -33,6 +33,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
         'storage',
         'alarms',
         'notifications',
+        'unlimitedStorage',
         'https://*.reddit.com/*',
         'https://*.redd.it/*',
     ];
@@ -94,7 +95,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
             },
         },
         options_ui: {
-            page: 'dist/options/index.html',
+            page: 'dist/options/watch.html',
             open_in_tab: true,
         },
 
