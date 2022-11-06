@@ -49,9 +49,10 @@ describe('Start extension', () => {
 
         jest.clearAllMocks();
 
-        expect(msgCallbacks.size).toBe(2);
+        expect(msgCallbacks.size).toBe(3);
         expect(msgCallbacks.has('UPDATE_NOW')).toBeTruthy();
         expect(msgCallbacks.has('SCHEDULE_NEXT_UPDATE')).toBeTruthy();
+        expect(msgCallbacks.has('OPEN_GROUPS')).toBeTruthy();
 
         await msgCallbacks.get('UPDATE_NOW')?.();
         expect(updateAndSchedule).toHaveBeenCalledWith(true);

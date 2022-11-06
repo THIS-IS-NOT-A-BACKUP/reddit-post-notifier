@@ -533,7 +533,9 @@ const storage = {
             count += a.mail?.messages?.length || 0;
         });
 
-        if (updateBadge) void browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+        if (updateBadge) {
+            await browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+        }
 
         return count;
     },

@@ -8,6 +8,7 @@ import type { PortMessage } from '../types/message';
 import { addNotificationClickListener } from '../notifier/notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
+import { openGroups } from './open-groups';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -21,6 +22,7 @@ if (IS_FIREFOX) {
 async function mergeOptions() {
     const options = await storage.getOptions();
     await storage.saveOptions({ ...DEFAULT_OPTIONS, ...options });
+    return options;
 }
 
 async function onInstall() {
@@ -39,6 +41,7 @@ export async function startExtension() {
 
     // Storage
     await mergeOptions();
+
     browser.storage.onChanged.addListener(() => void storage.countNumberOfUnreadItems());
     void storage.countNumberOfUnreadItems();
 
@@ -55,6 +58,7 @@ export async function startExtension() {
 
     onMessage('UPDATE_NOW', () => updateAndSchedule(true));
     onMessage('SCHEDULE_NEXT_UPDATE', () => scheduleNextUpdate());
+    onMessage('OPEN_GROUPS', openGroups);
 
     await updateAndSchedule();
 }

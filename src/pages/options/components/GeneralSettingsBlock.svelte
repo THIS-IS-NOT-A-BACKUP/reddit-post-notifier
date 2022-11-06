@@ -73,6 +73,11 @@
         });
         reader.readAsDataURL(file);
     };
+
+    const onBadgeClickChangeHandler = async () => {
+        const value = $storageData.options.onBadgeClick || 'popup';
+        await storage.saveOptions({ onBadgeClick: value });
+    };
 </script>
 
 <OptionsItem title={getMsg('optionUpdateInterval')} labelFor="updateIntervalInput">
@@ -196,6 +201,22 @@
 </OptionsItem>
 
 <ChangeUrlInput />
+
+<OptionsItem title={'Badge click action'}>
+    <div slot="description">Change behavior when clicking on the extension icon in the toolbar.</div>
+    <div slot="controls">
+        <select
+            name="onBadgeClick"
+            id="badgeClickSelect"
+            class="w-max"
+            bind:value={$storageData.options.onBadgeClick}
+            on:change={onBadgeClickChangeHandler}
+        >
+            <option value="popup">Open Popup</option>
+            <option value="openall">Open all unread items</option>
+        </select>
+    </div>
+</OptionsItem>
 
 <style lang="postcss">
     .play-btn {
