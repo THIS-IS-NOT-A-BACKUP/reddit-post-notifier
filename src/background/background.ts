@@ -1,4 +1,3 @@
-import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import { IS_CHROME, IS_DEV, IS_FIREFOX, IS_TEST } from '@/constants';
@@ -27,11 +26,7 @@ async function mergeOptions() {
 }
 
 async function onInstall() {
-    const listener = (info: Runtime.OnInstalledDetailsType) => {
-        if (info.reason === 'update' && parseInt(info.previousVersion || '1') < 4) {
-            void storage.migrateToV4();
-        }
-
+    const listener = () => {
         void mergeOptions();
 
         if (IS_DEV) {
